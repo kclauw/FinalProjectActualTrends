@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from random import randint
 from time import sleep
-from util import append_to_2dlist
+from .util import append_to_2dlist
 
 
 KEY = 'AIzaSyC8ezA75-Lhm4C6GWowFDrH9fLI19AqtOU'
@@ -74,7 +74,7 @@ def distanceMatrix(origins, destinations = None, mode = 'walking'):
         [(48.85668, 2.35196), (48.86142, 2.33929), (48.86897, 2.32369), ...
     Returns a list of coordinates to follow, or None if it didn't work either.
     '''
-    
+
     args = {'mode': mode}
     #Convert the origins and destinations to a format the google API understands .i.e  long1,lat1|long2,lat2
     args.update({'origins' : "|".join(str(",".join(str(x) for x in y)) for y in origins), 'destinations' : "|".join(str(",".join(str(x) for x in y)) for y in destinations)})
@@ -155,9 +155,6 @@ def path(origin, destination = None, mode = 'walking'):
     '''
     Find a not-so-long path from somewhere to somewhere else.
     'origin' and 'destination' must be coordinates.
-    If 'destination' is omitted, 'origin' must be a list of coordinates.
-        >>> path(coordinates('Paris'), coordinates('London'))
-        [(48.85668, 2.35196), (48.86142, 2.33929), (48.86897, 2.32369), ...
     Returns a list of coordinates to follow, or None if it didn't work either.
     '''
 
@@ -182,7 +179,7 @@ def path(origin, destination = None, mode = 'walking'):
         # You can extract other useful informations here, such as duration
         #print(result['routes'][0])
         result = result['routes'][0]['overview_polyline']['points']
-       
+
 
     except:
 
@@ -224,7 +221,7 @@ def distance_duration(origin, destination = None, mode = 'walking'):
         distance = result['routes'][0]['legs'][0]['distance']['value']
         duration = result['routes'][0]['legs'][0]['duration']['value']
         #result = result['routes'][0]['overview_polyline']['points']
-       
+
 
     except:
 
@@ -242,7 +239,7 @@ origins = tuple([50.824352000000005,4.334465])
 
 #print(add_chunk_to_matrix(origins, 10))
 destinations = tuple([50.87808,4.34793])
-L = [1,2,3]       
+L = [1,2,3]
 print(path(origins,destinations))
 #Process a batch
 
@@ -254,14 +251,14 @@ def batch_distance_matrix(x,batch, mode = 'walking'):
     distance_matrix = [[] for i in range(length)]
 
     while i < length:
-       
+
         #Process a batch of data
         chunk1 = x[i:(i+batch)]
         print("i",i,len(chunk1),len(distance_matrix[i]))
         #Compare chunk to other elements in dataset and create a row
         j = 0
         row = []
-        
+
         while j < length:
 
             chunk2 = x[j:(j+batch)]
@@ -273,7 +270,7 @@ def batch_distance_matrix(x,batch, mode = 'walking'):
             #Convert the origins and destinations to a format the google API understands .i.e  long1,lat1|long2,lat2
             #args.update({'origins' : "|".join(str(",".join(str(x) for x in y)) for y in chunk1), 'destinations' : "|".join(str(",".join(str(x) for x in y)) for y in chunk2)})
             #result = _fetch('distancematrix', args)
-            
+
 
             for source in range(len(chunk1)):
                 print("source",source+i,len(distance_matrix))
@@ -284,17 +281,17 @@ def batch_distance_matrix(x,batch, mode = 'walking'):
                     #print("target",i+source," len ",len(distance_matrix))
                     distance_matrix[i+source].append(target)
                 #for target in range(len(chunk2)):
-                    
+
                     #distance_matrix[i+source].append(source)
             # You can extract other useful informations here, such as duration
-            
+
             #for isrc, source in enumerate(result['origin_addresses']):
             #    for idst, target in enumerate(result['destination_addresses']):
             #        row = result['rows'][isrc]
             #        cell = row['elements'][idst]
              #       distance_matrix[i+isrc].append((cell['distance']['text'],cell['duration']['text']))
-           
-            
+
+
 
 
             #sleep(1)
@@ -306,17 +303,8 @@ def batch_distance_matrix(x,batch, mode = 'walking'):
         #print(distance_matrix)
         df = pd.DataFrame(distance_matrix,index=None)
         df.to_csv('./data/batch' + str(i) + '.csv',index=None)
-        
+
         i+=batch
 
     #Process the rest
     return distance_matrix
-
-
-
-
-    
-
-
-
-
