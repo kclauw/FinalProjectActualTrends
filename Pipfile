@@ -9,7 +9,9 @@ verify_ssl = true
 django = "*"
 gunicorn = "*"
 django-heroku = "*"
-
+numpy = "*"
+pandas = "*"
+requests = "*"
 
 [requires]
 
